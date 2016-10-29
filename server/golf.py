@@ -22,9 +22,13 @@ class Golf(ApplicationSession):
         yield self.subscribe(self.onGyro,
                 'com.forrestli.selfiegolf.pubsub.gyro')
 
+        a = b = c = 0
+
         while True:
-            yield self.publish('com.forrestli.selfiegolf.pubsub.ball', [0, 0, 0, False])
-            yield sleep(0.01)
+            yield self.publish('com.forrestli.selfiegolf.pubsub.ball', a, b, c, False)
+            yield sleep(1)
+            a -= 0.01
+            c -= 0.01
 
 
     #@inlineCallbacks

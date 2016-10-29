@@ -9,8 +9,11 @@ animate();
 
 
 
-function onBall(x, y, z, isMoving) {
-    //console.log('ball', x, y, z, isMoving);
+function onBall(data) {
+    var x = data[0],
+        y = data[1],
+        z = data[2],
+        isMoving = data[3];
     window.ball.x = x;
     window.ball.y = y;
     window.ball.z = z;
