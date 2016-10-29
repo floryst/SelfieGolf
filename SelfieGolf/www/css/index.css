@@ -1,0 +1,14 @@
+body {
+    -webkit-touch-callout: none;                /* prevent callout to copy image, etc when tap to hold */
+    -webkit-text-size-adjust: none;             /* prevent webkit from resizing text to fit */
+    -webkit-user-select: none;                  /* prevent copy paste, to allow, change 'none' to 'text' */
+    font-size:24px;
+    height:100%;
+    margin:0px;
+    padding:0px;
+    width:100%;
+}
+
+div {
+    padding: 20px;
+}

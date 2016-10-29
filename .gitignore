@@ -1,0 +1,7 @@
+node_modules/
+*.sw*
+cordova
+phonegap
+__pycache__
+*~
+*.bak

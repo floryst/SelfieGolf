@@ -1,0 +1,19 @@
+<?xml version='1.0' encoding='utf-8'?>
+<widget id="com.forrestli.selfiegolf" version="1.0.0" xmlns="http://www.w3.org/ns/widgets" xmlns:gap="http://phonegap.com/ns/1.0">
+    <name>SelfieGolf</name>
+    <description>
+        Selfie Golf! The most non-dangerous sport. Guaranteed.
+    </description>
+    <author email="f@forrestli.com" href="http://forrestli.com">
+        Forrest Li
+    </author>
+    <content src="index.html" />
+    <preference name="DisallowOverscroll" value="true" />
+    <preference name="android-minSdkVersion" value="14" />
+
+    <plugin name="cordova-plugin-device-motion" source="npm" spec="~1.2.0" />
+    <plugin name="cordova-plugin-device-orientation" source="npm" />
+
+    <icon src="icon.png" />
+    <access origin="*" />
+</widget>
