@@ -40,7 +40,7 @@ var app = {
                 });
         app.compassWatchID = navigator.compass.watchHeading(
                 app.onCompassSuccess, app.onAccelError, {
-                    frequency: 20
+                    frequency: 40
                 });
         app.gyroWatchID = navigator.gyroscope.watch(
                 app.onGyroSuccess, app.onAccelError, {
