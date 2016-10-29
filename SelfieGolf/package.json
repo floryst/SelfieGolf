@@ -1,21 +1,17 @@
 {
-  "name": "phonegap-template-hello-world",
+  "name": "selfie_golf",
   "version": "4.0.2",
-  "description": "> A Hello World template built with PhoneGap",
+  "description": "Golf with selfie sticks!",
   "repository": {
     "type": "git",
-    "url": "https://github.com/phonegap/phonegap-app-hello-world.git"
+    "url": "https://github.com/floryst/SelfieGolf/SelfieGolf.git"
   },
-  "author": "PhoneGap Team",
+  "author": "Forrest Li & Hastings Greer",
   "license": "Apache-2.0.0",
   "keywords": [
-    "ecosystem:phonegap",
-    "ecosystem:cordova",
-    "cordova:template",
-    "phonegap:template"
   ],
   "bugs": {
-    "url": "https://github.com/phonegap/phonegap-app-hello-world/issues"
+    "url": ""
   },
-  "homepage": "https://github.com/phonegap/phonegap-app-hello-world"
+  "homepage": ""
 }
