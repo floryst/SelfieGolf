@@ -1,11 +1,24 @@
 var scene, camera, renderer;
 var geometry, material, mesh;
-
+var conn, session;
 
 
 init();
 animate();
 
+function onBall(x, y, z, isMoving) {
+    console.log('ball', x, y, z, isMoving);
+}
+
+function onOrient(heading) {
+    console.log('heading', heading);
+}
+
+function connEstablished(sess, details) {
+    session = sess;
+    session.subscribe('com.forrestli.selfiegolf.pubsub.ball', onBall);
+    session.subscribe('com.forrestli.selfiegolf.pubsub.orient', onOrient);
+}
 
 function init() {
 
@@ -43,6 +56,15 @@ function init() {
 
     document.body.appendChild( renderer.domElement );
 
+    // connect to server
+    conn = new autobahn.Connection({
+        url: 'ws://localhost:8000/ws',
+        realm: 'golf_course'
+    });
+
+    conn.onopen = connEstablished;
+
+    conn.open();
 }
 
 function animate() {

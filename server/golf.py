@@ -22,6 +22,10 @@ class Golf(ApplicationSession):
         yield self.subscribe(self.onGyro,
                 'com.forrestli.selfiegolf.pubsub.gyro')
 
+        while True:
+            yield self.publish('com.forrestli.selfiegolf.pubsub.ball', [0, 0, 0, False])
+            yield sleep(0.01)
+
 
     #@inlineCallbacks
     def onAccel(self, x, y, z):
