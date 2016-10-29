@@ -2,18 +2,19 @@ var scene, camera, renderer;
 var geometry, material, mesh;
 var conn, session;
 
+window.ball = {x: 0, y:0, z:0, isMoving:false};
 
 init();
 animate();
 
-var ball = {x: 0, y:0, z:0, isMoving:false};
+
 
 function onBall(x, y, z, isMoving) {
-    console.log('ball', x, y, z, isMoving);
-    ball.x = x;
-    ball.y = y;
-    ball.z = z;
-    ball.isMoving = isMoving;
+    //console.log('ball', x, y, z, isMoving);
+    window.ball.x = x;
+    window.ball.y = y;
+    window.ball.z = z;
+    window.ball.isMoving = isMoving;
 }
 
 function onOrient(heading) {
@@ -85,13 +86,13 @@ function animate() {
     mesh.rotation.x += 0.01;
     mesh.rotation.y += 0.02;
 
-    ballMesh.position.x = ball.x;
-    ballMesh.position.z = ball.z;
-    if(ball.isMoving){
-      camera.lookAt(new THREE.Vector3(ball.x, ball.y, ball.z));
+    //ballMesh.position.x = window.ball.x;
+    //ballMesh.position.z = window.ball.z;
+    if(window.ball.isMoving){
+      //camera.lookAt(new THREE.Vector3(window.ball.x, window.ball.y, window.ball.z));
     } else {
-      camera.position.x = ball.x;
-      camera.position.z = ball.z;
+      //camera.position.x = window.ball.x;
+      //camera.position.z = window.ball.z;
     }
 
     renderer.render( scene, camera );
