@@ -13,6 +13,7 @@
 
     <plugin name="cordova-plugin-device-motion" source="npm" spec="~1.2.0" />
     <plugin name="cordova-plugin-device-orientation" source="npm" />
+    <plugin name="cordova-plugin-gyroscope" source="npm" spec="~0.1.4" />
 
     <icon src="icon.png" />
     <access origin="*" />
