@@ -86,8 +86,8 @@ function animate() {
     mesh.rotation.x += 0.01;
     mesh.rotation.y += 0.02;
 
-    //ballMesh.position.x = window.ball.x;
-    //ballMesh.position.z = window.ball.z;
+    ballMesh.position.x = window.ball.x;
+    ballMesh.position.z = window.ball.z;
     if(window.ball.isMoving){
       //camera.lookAt(new THREE.Vector3(window.ball.x, window.ball.y, window.ball.z));
     } else {
