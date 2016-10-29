@@ -2,7 +2,7 @@ var scene, camera, renderer;
 var geometry, material, mesh;
 var conn, session;
 
-window.ball = {x: 0, y:0, z:0, isMoving:false};
+window.ball = {x: 0, y:0, z:0, isMoving:false, heading:0};
 
 init();
 animate();
@@ -21,7 +21,7 @@ function onBall(data) {
 }
 
 function onOrient(heading) {
-    console.log('heading', heading);
+    window.ball.heading = heading[1];
 }
 
 function connEstablished(sess, details) {
@@ -92,10 +92,14 @@ function animate() {
     ballMesh.position.x = window.ball.x;
     ballMesh.position.z = window.ball.z;
     if(window.ball.isMoving){
-      //camera.lookAt(new THREE.Vector3(window.ball.x, window.ball.y, window.ball.z));
+      camera.lookAt(new THREE.Vector3(window.ball.x, window.ball.y, window.ball.z));
     } else {
-      //camera.position.x = window.ball.x;
-      //camera.position.z = window.ball.z;
+      camera.position.x = window.ball.x;
+      camera.position.z = window.ball.z;
+      var lookx = window.ball.x + Math.cos(2 * Math.PI * window.ball.heading / 360.0);
+      var looky = 0;
+      var lookz = window.ball.z + Math.sin(2 * Math.PI * window.ball.heading / 360.0);
+      camera.lookAt(new THREE.Vector3(lookx, looky, lookz));
     }
 
     renderer.render( scene, camera );
