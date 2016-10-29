@@ -6,8 +6,14 @@ var conn, session;
 init();
 animate();
 
+var ball = {x: 0, y:0, z:0, isMoving:false};
+
 function onBall(x, y, z, isMoving) {
     console.log('ball', x, y, z, isMoving);
+    ball.x = x;
+    ball.y = y;
+    ball.z = z;
+    ball.isMoving = isMoving;
 }
 
 function onOrient(heading) {
@@ -43,6 +49,10 @@ function init() {
         console.log("loader worked i guess");
     });
 
+    ballGeo = new THREE.SphereGeometry(.1);
+    ballMesh = new THREE.Mesh(ballGeo, material);
+    scene.add(ballMesh);
+
     var dirLight = new THREE.DirectionalLight(0xffffff, 1);
     dirLight.position.set(100, 100, 50);
     scene.add(dirLight);
@@ -74,6 +84,15 @@ function animate() {
 
     mesh.rotation.x += 0.01;
     mesh.rotation.y += 0.02;
+
+    ballMesh.position.x = ball.x;
+    ballMesh.position.z = ball.z;
+    if(ball.isMoving){
+      camera.lookAt(new THREE.Vector3(ball.x, ball.y, ball.z));
+    } else {
+      camera.position.x = ball.x;
+      camera.position.z = ball.z;
+    }
 
     renderer.render( scene, camera );
 
