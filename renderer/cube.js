@@ -11,8 +11,12 @@ function init() {
 
     scene = new THREE.Scene();
 
-    camera = new THREE.PerspectiveCamera( 75, window.innerWidth / window.innerHeight, .1, 1000 );
-    camera.position.z = 4;
+    camera = new THREE.PerspectiveCamera( 108, window.innerWidth / window.innerHeight, .1, 1000 );
+
+    camera.position.y = 1;
+
+    camera.lookAt(new THREE.Vector3(-1, 0, 1));
+
 
     geometry = new THREE.BoxGeometry( 200, 200, 200 );
     material = new THREE.MeshBasicMaterial( { color: 0xff0000, wireframe: true } );
