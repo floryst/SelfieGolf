@@ -59,6 +59,14 @@ function init() {
     ballMesh.position.y = .04;
     scene.add(ballMesh);
 
+    var dir = new THREE.Vector3( 1, 0, 0 );
+    var origin = new THREE.Vector3( 0, 0, 0 );
+    var length = 1;
+    var hex = 0xffff00;
+
+    arrowHelper = new THREE.ArrowHelper( dir, origin, length, hex );
+    scene.add( arrowHelper );
+
     var dirLight = new THREE.DirectionalLight(0xffffff, 1);
     dirLight.position.set(100, 100, 50);
     scene.add(dirLight);
@@ -95,7 +103,10 @@ function animate() {
     ballMesh.position.z = window.ball.z;
     if(window.ball.isMoving){
       camera.lookAt(new THREE.Vector3(window.ball.x, window.ball.y, window.ball.z));
+      arrowHelper.origin = new THREE.Vector3(1000, 1000, 1000);
     } else {
+      arrowHelper.origin = THREE.Vector3(window.ball.x, window.ball.y, window.ball.z);
+      arrowHelper.setDirection(new THREE.Vector3(Math.cos(window.ball.heading), 0, Math.sin(window.ball.heading)));
       camera.position.x = window.ball.x;
       camera.position.z = window.ball.z;
       var lookx = window.ball.x + Math.cos(window.ball.heading);
