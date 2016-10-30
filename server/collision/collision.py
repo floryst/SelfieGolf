@@ -1,5 +1,6 @@
 import numpy as np
 import xml
+import subprocess
 import matplotlib.pyplot as plt
 points = "8.216041 38.6137 18.88516 -18.05325 38.6137 18.88516 8.216041 38.6137 -12.37988 2.782208 38.6137 -12.37988 -43.43998 38.6137 -12.37988 -43.43998 38.6137 41.40468 -11.77235 38.6137 41.40468 -11.77235 38.6137 81.18934 31.24837 38.6137 81.18934 31.24837 38.6137 41.40468 8.216041 38.6137 41.40468 8.216041 38.6137 24.71702 -18.05325 38.6137 24.71702"
 points = points.split()
@@ -52,6 +53,7 @@ def path(x,z, vx, vz):
     while vx * vx + vz * vz > slow * slow:
         n, tiem = collide(x, z, vx, vz)
         if tiem < timestep:
+            subprocess.run(['play', '../boop.wav'])
             timeleft = timestep
             while tiem < timeleft:
                 x += vx * tiem

@@ -1,5 +1,6 @@
 import os
 import sys
+import subprocess
 
 from twisted.internet.defer import inlineCallbacks
 from twisted.logger import Logger
@@ -65,8 +66,10 @@ class Golf(ApplicationSession):
         for x, z in path:
             if z > self.hole_z-self.hole_width2 and z < self.hole_z+self.hole_width2 and \
                     x > self.hole_x-self.hole_width2 and x < self.hole_x+self.hole_width2:
-                # TODO have fireworks or something here
-                pass
+                subprocess.run(['play', '-q', '../golf_hole.py'])
+                yield self.call('com.forrestli.selfiegolf.hide_ball')
+                # don't continue to perform swing
+                return
             yield self.publish('com.forrestli.selfiegolf.pubsub.ball', x, .1, z, self.stationary)
             yield sleep(.01)
         self.stationary = True
