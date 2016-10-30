@@ -1,5 +1,6 @@
 import os
 import sys
+import subprocess
 
 from twisted.internet.defer import inlineCallbacks
 from twisted.logger import Logger
@@ -65,8 +66,10 @@ class Golf(ApplicationSession):
         for x, z in path:
             if z > self.hole_z-self.hole_width2 and z < self.hole_z+self.hole_width2 and \
                     x > self.hole_x-self.hole_width2 and x < self.hole_x+self.hole_width2:
-                # TODO have fireworks or something here
-                pass
+                subprocess.run(['play', '-q', '../golf_hole.py'])
+                yield self.call('com.forrestli.selfiegolf.hide_ball')
+                # don't continue to perform swing
+                return
             yield self.publish('com.forrestli.selfiegolf.pubsub.ball', x, .1, z, self.stationary)
             yield sleep(.01)
         self.stationary = True
@@ -79,7 +82,7 @@ class Golf(ApplicationSession):
         self.about2hit = True
 
     def onAccel(self, x, y, z):
-        self.log.info('accel: {x} {y} {z}', x=x, y=y, z=z)
+        #self.log.info('accel: {x} {y} {z}', x=x, y=y, z=z)
         guess = np.arcsin((y -  self.DDtheta * r)/9.8)
         if not(np.isnan(guess)):
             self.theta = weight * guess + unweight * self.theta
@@ -87,7 +90,7 @@ class Golf(ApplicationSession):
     def onOrient(self, mag, true):
         o = mag * np.pi / 180
         self.orientation = weight * o + unweight * self.orientation
-        self.log.info('orient: {mag} {true}', mag=mag, true=true)
+        #self.log.info('orient: {mag} {true}', mag=mag, true=true)
 
     @inlineCallbacks
     def onGyro(self, x, y, z):
@@ -100,4 +103,4 @@ class Golf(ApplicationSession):
             self.stationary = False
             self.about2hit = False
             self.swing()
-        self.log.info('gyro: {x} {y} {z}', x=x, y=y, z=z)
+        #self.log.info('gyro: {x} {y} {z}', x=x, y=y, z=z)
