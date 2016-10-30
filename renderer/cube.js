@@ -52,9 +52,10 @@ function init() {
         scene.add(result.scene);
         console.log("loader worked i guess");
     });
-
-    ballGeo = new THREE.SphereGeometry(.1);
-    ballMesh = new THREE.Mesh(ballGeo, material);
+    ballMat = new THREE.MeshLambertMaterial();
+    ballGeo = new THREE.SphereGeometry(.04);
+    ballMesh = new THREE.Mesh(ballGeo, ballMat);
+    ballMesh.position.y = .04;
     scene.add(ballMesh);
 
     var dirLight = new THREE.DirectionalLight(0xffffff, 1);
