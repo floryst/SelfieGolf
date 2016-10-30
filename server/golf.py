@@ -105,6 +105,8 @@ class Golf(ApplicationSession):
                 # stupid "mutex"
                 self.disable_hits = False
 
+                yield self.call('com.forrestli.selfiegolf.show_ball')
+
                 return
             yield self.publish('com.forrestli.selfiegolf.pubsub.ball', x, .1, z, self.stationary)
             yield sleep(.01)
