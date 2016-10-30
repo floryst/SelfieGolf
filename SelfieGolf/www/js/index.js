@@ -54,6 +54,7 @@ var app = {
     },
     onVolumeUp: function(ev) {
         document.body.setAttribute('style', 'background-color:red');
+        app.session.publish('com.forrestli.selfiegolf.pubsub.boop', ["boop"]);
     },
     onAccelSuccess: function(acc) {
         document.getElementById('x').innerHTML = acc.x;
