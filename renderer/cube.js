@@ -13,11 +13,11 @@ function onBall(data) {
     var x = data[0],
         y = data[1],
         z = data[2],
-        isMoving = data[3];
+        isStationary = data[3];
     window.ball.x = x;
     window.ball.y = y;
     window.ball.z = z;
-    window.ball.isMoving = isMoving;
+    window.ball.isMoving = !isStationary;
 }
 
 function onOrient(heading) {
