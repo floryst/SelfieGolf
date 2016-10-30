@@ -133,7 +133,7 @@ class Golf(ApplicationSession):
 
     @inlineCallbacks
     def onGyro(self, x, y, z):
-        self.orientation -= z * dt
+        self.orientation -= .3 * z * dt
         self.theta += x/dt
         self.DDtheta = (x - self.prevDtheta)/dt
         self.prevDtheta = x
