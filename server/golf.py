@@ -50,7 +50,6 @@ class Golf(ApplicationSession):
 
     @inlineCallbacks
     def onJoin(self, details):
-
         yield self.subscribe(self.onAccel,
                 'com.forrestli.selfiegolf.pubsub.accel')
         #yield self.subscribe(self.onOrient,
@@ -67,6 +66,8 @@ class Golf(ApplicationSession):
         self.prevDtheta = 0
         self.DDtheta = 0
         self.orientation = 0
+        self.disable_hits = False
+        self.cur_level = 0
 
         self.x = 0
         self.z = 0
@@ -83,9 +84,27 @@ class Golf(ApplicationSession):
         for x, z in path:
             if z > self.hole_z-self.hole_width2 and z < self.hole_z+self.hole_width2 and \
                     x > self.hole_x-self.hole_width2 and x < self.hole_x+self.hole_width2:
-                subprocess.run(['play', '-q', '../golf_hole.py'])
+                subprocess.Popen(['play', '-q', '../golf_hole.py'])
                 yield self.call('com.forrestli.selfiegolf.hide_ball')
                 # don't continue to perform swing
+                self.disable_hits = True
+
+                # sleep 1 sec for user experience
+                yield sleep(1)
+
+                # set game state
+                self.cur_level += 1
+                if self.cur_level >= len(holes):
+                    self.log('We done here. No more golf for u. U win! <3')
+                    return
+                x, z = start[self.cur_level]
+                self.x, self.z = x, z
+                self.stationary = True
+                yield self.publish('com.forrestli.selfiegolf.pubsub.ball', x, .1, z, self.stationary)
+
+                # stupid "mutex"
+                self.disable_hits = False
+
                 return
             yield self.publish('com.forrestli.selfiegolf.pubsub.ball', x, .1, z, self.stationary)
             yield sleep(.01)
@@ -95,8 +114,9 @@ class Golf(ApplicationSession):
         yield self.publish('com.forrestli.selfiegolf.pubsub.ball', x, .1, z, self.stationary)
 
     def onBoop(self, msg):
-        self.log.info("boop")
-        self.about2hit = True
+        if not self.disable_hits:
+            self.log.info("boop")
+            self.about2hit = True
 
     def onAccel(self, x, y, z):
         #self.log.info('accel: {x} {y} {z}', x=x, y=y, z=z)
