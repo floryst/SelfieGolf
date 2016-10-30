@@ -51,27 +51,43 @@ class Golf(ApplicationSession):
         self.orientation = 0
 
         self.x = 0
-        self.y = 0
+        self.z = 0
 
 
-        while True:
-            x, z = next(b)
+    @inlineCallbacks
+    def swing(self):
+        v = self.prevDtheta * r
+        path = collision.collision.path(self.x, self.z, v * np.cos(orientation), v * np.sin(orientation))
+        for x, z in path:
+
             yield self.publish('com.forrestli.selfiegolf.pubsub.ball', x, .1, z, self.stationary)
             yield sleep(.01)
-
-
+        self.stationary = True
     def onBoop(self, msg):
         self.log.info("boop")
         self.about2hit = True
+
     #@inlineCallbacks
     def onAccel(self, x, y, z):
         self.log.info('accel: {x} {y} {z}', x=x, y=y, z=z)
-        guess = np.arcsin((x -  self.DDtheta * r)/9.8)
+        guess = np.arcsin((y -  self.DDtheta * r)/9.8)
         if not(np.isnan(guess)):
-            x = weight * guess + unweight * x
+            theta = weight * guess + unweight * theta
     #@inlineCallbacks
     def onOrient(self, mag, true):
+        o = mag * np.pi / 180
+        self.orientation = weight * o + unweight * orientation
         self.log.info('orient: {mag} {true}', mag=mag, true=true)
 
+    @inlineCallbacks
     def onGyro(self, x, y, z):
+        self.orientation += z * dt
+        self.theta += x/dt
+        self.DDtheta = (x - self.prevDtheta)/dt
+        self.prevDtheta = x
+        yield self.publish('com.forrestli.selfiegolf.pubsub.orientation', self.orientation)
+        if(self.theta > 0 and self.about2hit):
+            self.stationary = False
+            self.about2hit = False
+            self.swing()
         self.log.info('gyro: {x} {y} {z}', x=x, y=y, z=z)

@@ -27,7 +27,7 @@ function onOrient(heading) {
 function connEstablished(sess, details) {
     session = sess;
     session.subscribe('com.forrestli.selfiegolf.pubsub.ball', onBall);
-    session.subscribe('com.forrestli.selfiegolf.pubsub.orient', onOrient);
+    session.subscribe('com.forrestli.selfiegolf.pubsub.orientation', onOrient);
 }
 
 function init() {
