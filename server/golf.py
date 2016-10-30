@@ -53,13 +53,20 @@ class Golf(ApplicationSession):
         self.x = 0
         self.z = 0
 
+        # TODO don't hardcode this
+        self.hole_z = 1.8684875
+        self.hole_x = 0.6365875
+        self.hole_width2 = 0.0777875/2
 
     @inlineCallbacks
     def swing(self):
         v = self.prevDtheta * r
         path = collision.collision.path(self.x, self.z, v * np.cos(self.orientation), v * np.sin(self.orientation))
         for x, z in path:
-
+            if z > self.hole_z-self.hole_width2 and z < self.hole_z+self.hole_width2 and \
+                    x > self.hole_x-self.hole_width2 and x < self.hole_x+self.hole_width2:
+                # TODO have fireworks or something here
+                pass
             yield self.publish('com.forrestli.selfiegolf.pubsub.ball', x, .1, z, self.stationary)
             yield sleep(.01)
         self.stationary = True
