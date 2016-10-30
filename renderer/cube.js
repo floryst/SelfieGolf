@@ -21,7 +21,8 @@ function onBall(data) {
 }
 
 function onOrient(heading) {
-    window.ball.heading = heading[1];
+    console.log(heading);
+    window.ball.heading = heading[0];
 }
 
 function connEstablished(sess, details) {
@@ -97,9 +98,9 @@ function animate() {
     } else {
       camera.position.x = window.ball.x;
       camera.position.z = window.ball.z;
-      var lookx = window.ball.x + Math.cos(2 * Math.PI * window.ball.heading / 360.0);
+      var lookx = window.ball.x + Math.cos(window.ball.heading);
       var looky = 0;
-      var lookz = window.ball.z + Math.sin(2 * Math.PI * window.ball.heading / 360.0);
+      var lookz = window.ball.z + Math.sin(window.ball.heading);
       camera.lookAt(new THREE.Vector3(lookx, looky, lookz));
     }
 
