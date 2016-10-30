@@ -99,7 +99,7 @@ class Golf(ApplicationSession):
                 self.hole_x, self.hole_z = holes[self.cur_level]
                 self.x, self.z = start[self.cur_level]
                 self.stationary = True
-                yield self.publish('com.forrestli.selfiegolf.pubsub.ball', x, .1, z, self.stationary)
+                yield self.publish('com.forrestli.selfiegolf.pubsub.ball', self.x, .1, self.z, self.stationary)
 
                 self.strokes = 0
                 yield self.publish('com.forrestli.selfiegolf.pubsub.strokes', self.strokes)
