@@ -92,10 +92,7 @@ class Golf(ApplicationSession):
                 yield sleep(1)
 
                 # set game state
-                self.cur_level += 1
-                if self.cur_level >= len(holes):
-                    self.log('We done here. No more golf for u. U win! <3')
-                    return
+                self.cur_level = (self.cur_level + 1) % len(holes)
                 self.hole_x, self.hole_z = holes[self.cur_level]
                 self.x, self.z = start[self.cur_level]
                 self.stationary = True
