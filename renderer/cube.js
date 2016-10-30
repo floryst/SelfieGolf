@@ -3,6 +3,7 @@ var geometry, material, mesh;
 var conn, session;
 var ballHidden = false;
 
+window.strokes = 0;
 window.ball = {x: 0, y:0, z:0, isMoving:false, heading:0};
 
 init();
@@ -25,6 +26,12 @@ function onOrient(heading) {
     window.ball.heading = heading[0];
 }
 
+function onStroke(strokes) {
+    window.strokes = strokes[0];
+    // XSS-enabled
+    document.getElementById("strokes").innerHTML = window.strokes;
+}
+
 // hide ball by moving it below world
 function hideBall() {
     window.ballHidden = true;
@@ -38,6 +45,7 @@ function connEstablished(sess, details) {
     session = sess;
     session.subscribe('com.forrestli.selfiegolf.pubsub.ball', onBall);
     session.subscribe('com.forrestli.selfiegolf.pubsub.orientation', onOrient);
+    session.subscribe('com.forrestli.selfiegolf.pubsub.strokes', onStroke);
     session.register('com.forrestli.selfiegolf.hide_ball', hideBall).then(function() {}, function(err) {
         console.error('Failed to register hide_ball!');
     });

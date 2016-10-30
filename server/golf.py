@@ -18,7 +18,7 @@ import numpy as np
 # holes[i-1] is the (x,z) of ith hole
 hole_halfwidth = 0.0777875/2
 holes = [
-    (1.8684875, 0.6365875),
+    (0.6365875, 1.8684875),
     (-1.662, -6.1563),
     (-3.6925, 2.5416)
 ]
@@ -69,11 +69,15 @@ class Golf(ApplicationSession):
         self.orientation = 0
         self.disable_hits = False
         self.cur_level = 0
+        self.strokes = 0
         self.hole_x, self.hole_z = holes[self.cur_level]
         self.x, self.z = start[self.cur_level]
 
     @inlineCallbacks
     def swing(self):
+        self.strokes += 1
+        yield self.publish('com.forrestli.selfiegolf.pubsub.strokes', self.strokes)
+
         v = self.prevDtheta * r
         path = collision.collision.path(self.x, self.z, v * np.cos(self.orientation), v * np.sin(self.orientation))
         for x, z in path:
@@ -97,6 +101,8 @@ class Golf(ApplicationSession):
                 self.stationary = True
                 yield self.publish('com.forrestli.selfiegolf.pubsub.ball', x, .1, z, self.stationary)
 
+                self.strokes = 0
+                yield self.publish('com.forrestli.selfiegolf.pubsub.strokes', self.strokes)
 
                 # stupid "mutex"
                 self.disable_hits = False
