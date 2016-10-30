@@ -16,8 +16,9 @@ import numpy as np
 # (sighs)
 ## LEVEL DATA
 # holes[i-1] is the (x,z) of ith hole
+hole_halfwidth = 0.0777875/2
 holes = [
-    (-1, -1),
+    (1.8684875, 0.6365875),
     (-1.662, -6.1563),
     (-3.6925, 2.5416)
 ]
@@ -68,22 +69,16 @@ class Golf(ApplicationSession):
         self.orientation = 0
         self.disable_hits = False
         self.cur_level = 0
-
-        self.x = 0
-        self.z = 0
-
-        # TODO don't hardcode this
-        self.hole_z = 1.8684875
-        self.hole_x = 0.6365875
-        self.hole_width2 = 0.0777875/2
+        self.hole_x, self.hole_z = holes[self.cur_level]
+        self.x, self.z = start[self.cur_level]
 
     @inlineCallbacks
     def swing(self):
         v = self.prevDtheta * r
         path = collision.collision.path(self.x, self.z, v * np.cos(self.orientation), v * np.sin(self.orientation))
         for x, z in path:
-            if z > self.hole_z-self.hole_width2 and z < self.hole_z+self.hole_width2 and \
-                    x > self.hole_x-self.hole_width2 and x < self.hole_x+self.hole_width2:
+            if z > self.hole_z-hole_halfwidth  and z < self.hole_z+hole_halfwidth and \
+                    x > self.hole_x-hole_halfwidth and x < self.hole_x+hole_halfwidth:
                 subprocess.Popen(['play', '-q', '../golf_hole.py'])
                 yield self.call('com.forrestli.selfiegolf.hide_ball')
                 # don't continue to perform swing
@@ -97,10 +92,11 @@ class Golf(ApplicationSession):
                 if self.cur_level >= len(holes):
                     self.log('We done here. No more golf for u. U win! <3')
                     return
-                x, z = start[self.cur_level]
-                self.x, self.z = x, z
+                self.hole_x, self.hole_z = holes[self.cur_level]
+                self.x, self.z = start[self.cur_level]
                 self.stationary = True
                 yield self.publish('com.forrestli.selfiegolf.pubsub.ball', x, .1, z, self.stationary)
+
 
                 # stupid "mutex"
                 self.disable_hits = False
