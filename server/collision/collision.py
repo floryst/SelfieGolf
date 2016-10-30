@@ -89,7 +89,7 @@ def path(x,z, vx, vz):
     while vx * vx + vz * vz > slow * slow:
         n, tiem = collide(x, z, vx, vz)
         if tiem < timestep:
-            subprocess.run(['play', '../boop.wav'])
+            subprocess.Popen(['play', '-q', '../boop.wav'])
             timeleft = timestep
             while tiem < timeleft:
                 x += vx * tiem
