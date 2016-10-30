@@ -48,41 +48,27 @@ var app = {
                 });
 
         document.addEventListener("volumeupbutton", app.onVolumeUp, false);
-
-        document.body.setAttribute('style', 'background-color:green');
-        alert("done");
     },
     onVolumeUp: function(ev) {
-        document.body.setAttribute('style', 'background-color:red');
         app.session.publish('com.forrestli.selfiegolf.pubsub.boop', ["boop"]);
     },
     onAccelSuccess: function(acc) {
-        document.getElementById('x').innerHTML = acc.x;
-        document.getElementById('y').innerHTML = acc.y;
-        document.getElementById('z').innerHTML = acc.z;
-        // doesn't work?
-        //document.getElementById('timestamp').innerHTML = acc.timestamp.toLocaleString();
         app.session.publish('com.forrestli.selfiegolf.pubsub.accel', [acc.x, acc.y, acc.z]);
     },
     onAccelError: function() {
-        alert('Accel Error!');
+        console.log('Accel Error!');
     },
     onOrientError: function() {
-        alert('orient Error!');
+        console.log('orient Error!');
     },
     onGyroError: function() {
-        alert('gyro Error!');
+        console.log('gyro Error!');
     },
     onCompassSuccess: function(heading) {
-        document.getElementById('magheading').innerHTML = heading.magneticHeading;
-        document.getElementById('trueheading').innerHTML = heading.trueHeading;
         app.session.publish('com.forrestli.selfiegolf.pubsub.orient',
             [heading.magneticHeading, heading.trueHeading]);
     },
     onGyroSuccess: function(speed) {
-        document.getElementById('angx').innerHTML = speed.x;
-        document.getElementById('angy').innerHTML = speed.y;
-        document.getElementById('angz').innerHTML = speed.z;
         app.session.publish('com.forrestli.selfiegolf.pubsub.gyro', [speed.x, speed.y, speed.z]);
     }
 };

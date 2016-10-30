@@ -21,14 +21,28 @@ function onBall(data) {
 }
 
 function onOrient(heading) {
-    console.log(heading);
     window.ball.heading = heading[0];
+}
+
+// hide ball by moving it below world
+function hideBall() {
+    window.ball.y = -42;
+}
+
+function showBall() {
+    window.ball.y = 0;
 }
 
 function connEstablished(sess, details) {
     session = sess;
     session.subscribe('com.forrestli.selfiegolf.pubsub.ball', onBall);
     session.subscribe('com.forrestli.selfiegolf.pubsub.orientation', onOrient);
+    session.register('com.forrestli.selfiegolf.hide_ball', hideBall()).then(function() {}, function(err) {
+        console.error('Failed to register hide_ball!');
+    });
+    session.register('com.forrestli.selfiegolf.show_ball', showBall()).then(function() {}, function(err) {
+        console.error('Failed to register show_ball!');
+    });
 }
 
 function init() {

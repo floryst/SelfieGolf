@@ -13,6 +13,23 @@ import collision.collision
 
 import numpy as np
 
+# (sighs)
+## LEVEL DATA
+# holes[i-1] is the (x,z) of ith hole
+holes = [
+    (-1, -1),
+    (-1.662, -6.1563),
+    (-3.6925, 2.5416)
+]
+
+# start[i-1] is the (x,z) of ith course starting pos
+start = [
+    (0, 0),
+    (0.865, -5.367),
+    (-6.1293, 2.364)
+]
+## END LEVELDATA
+
 def infiniteBounceGenerator():
     x, z = 0, 0
     while True:
