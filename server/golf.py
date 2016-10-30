@@ -21,7 +21,7 @@ def infiniteBounceGenerator():
         for _ in range(40):
             yield x, z
 
-dt = .02
+dt = .04
 r = 1.2
 weight = .01
 unweight = .99
@@ -35,8 +35,8 @@ class Golf(ApplicationSession):
 
         yield self.subscribe(self.onAccel,
                 'com.forrestli.selfiegolf.pubsub.accel')
-        yield self.subscribe(self.onOrient,
-                'com.forrestli.selfiegolf.pubsub.orient')
+        #yield self.subscribe(self.onOrient,
+        #        'com.forrestli.selfiegolf.pubsub.orient')
         yield self.subscribe(self.onGyro,
                 'com.forrestli.selfiegolf.pubsub.gyro')
         yield self.subscribe(self.onBoop,
@@ -84,7 +84,7 @@ class Golf(ApplicationSession):
 
     @inlineCallbacks
     def onGyro(self, x, y, z):
-        self.orientation += z * dt
+        self.orientation -= z * dt
         self.theta += x/dt
         self.DDtheta = (x - self.prevDtheta)/dt
         self.prevDtheta = x

@@ -36,7 +36,7 @@ var app = {
 
         app.accelWatchID = navigator.accelerometer.watchAcceleration(
                 app.onAccelSuccess, app.onAccelError, {
-                    frequency: 20 // 40ms, minimum iOS freq
+                    frequency: 40 // 40ms, minimum iOS freq
                 });
         app.compassWatchID = navigator.compass.watchHeading(
                 app.onCompassSuccess, app.onOrientError, {
@@ -44,7 +44,7 @@ var app = {
                 });
         app.gyroWatchID = navigator.gyroscope.watch(
                 app.onGyroSuccess, app.onGyroError, {
-                    frequency: 20
+                    frequency: 40
                 });
 
         document.addEventListener("volumeupbutton", app.onVolumeUp, false);
