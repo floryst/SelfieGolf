@@ -79,7 +79,7 @@ class Golf(ApplicationSession):
         self.about2hit = True
 
     def onAccel(self, x, y, z):
-        self.log.info('accel: {x} {y} {z}', x=x, y=y, z=z)
+        #self.log.info('accel: {x} {y} {z}', x=x, y=y, z=z)
         guess = np.arcsin((y -  self.DDtheta * r)/9.8)
         if not(np.isnan(guess)):
             self.theta = weight * guess + unweight * self.theta
@@ -87,7 +87,7 @@ class Golf(ApplicationSession):
     def onOrient(self, mag, true):
         o = mag * np.pi / 180
         self.orientation = weight * o + unweight * self.orientation
-        self.log.info('orient: {mag} {true}', mag=mag, true=true)
+        #self.log.info('orient: {mag} {true}', mag=mag, true=true)
 
     @inlineCallbacks
     def onGyro(self, x, y, z):
@@ -100,4 +100,4 @@ class Golf(ApplicationSession):
             self.stationary = False
             self.about2hit = False
             self.swing()
-        self.log.info('gyro: {x} {y} {z}', x=x, y=y, z=z)
+        #self.log.info('gyro: {x} {y} {z}', x=x, y=y, z=z)
