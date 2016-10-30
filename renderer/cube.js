@@ -106,7 +106,8 @@ function animate() {
       arrowHelper.origin = new THREE.Vector3(1000, 1000, 1000);
     } else {
       arrowHelper.origin = THREE.Vector3(window.ball.x, window.ball.y, window.ball.z);
-      arrowHelper.setDirection(new THREE.Vector3(Math.cos(window.ball.heading), 0, Math.sin(window.ball.heading)));
+      // height of ball is 0.4
+      arrowHelper.setDirection(new THREE.Vector3(Math.cos(window.ball.heading), 0.2, Math.sin(window.ball.heading)));
       camera.position.x = window.ball.x;
       camera.position.z = window.ball.z;
       var lookx = window.ball.x + Math.cos(window.ball.heading);
