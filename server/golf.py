@@ -8,6 +8,18 @@ from autobahn.twisted.util import sleep
 from autobahn.twisted.wamp import ApplicationSession
 from autobahn.wamp.exception import ApplicationError
 
+import collision.collision
+
+def infiniteBounceGenerator():
+    x, z = 0, 0
+    while True:
+
+        for x, z in collision.collision.path(x, z, 2, 2):
+            yield x, z
+        for _ in range(40):
+            yield x, z
+
+
 class Golf(ApplicationSession):
 
     log = Logger()
@@ -22,13 +34,13 @@ class Golf(ApplicationSession):
         yield self.subscribe(self.onGyro,
                 'com.forrestli.selfiegolf.pubsub.gyro')
 
-        a = b = c = 0
 
+        b = infiniteBounceGenerator()
         while True:
-            yield self.publish('com.forrestli.selfiegolf.pubsub.ball', a, b, c, False)
-            yield sleep(1)
-            a -= 0.01
-            c -= 0.01
+            x, z = next(b)
+            yield self.publish('com.forrestli.selfiegolf.pubsub.ball', x, .1, z, True)
+            yield sleep(.01)
+
 
 
     #@inlineCallbacks
