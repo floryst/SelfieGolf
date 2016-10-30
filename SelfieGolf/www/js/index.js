@@ -39,11 +39,11 @@ var app = {
                     frequency: 20 // 40ms, minimum iOS freq
                 });
         app.compassWatchID = navigator.compass.watchHeading(
-                app.onCompassSuccess, app.onAccelError, {
+                app.onCompassSuccess, app.onOrientError, {
                     frequency: 40
                 });
         app.gyroWatchID = navigator.gyroscope.watch(
-                app.onGyroSuccess, app.onAccelError, {
+                app.onGyroSuccess, app.onGyroError, {
                     frequency: 20
                 });
 
@@ -64,7 +64,13 @@ var app = {
         app.session.publish('com.forrestli.selfiegolf.pubsub.accel', [acc.x, acc.y, acc.z]);
     },
     onAccelError: function() {
-        alert('Error!');
+        alert('Accel Error!');
+    },
+    onOrientError: function() {
+        alert('orient Error!');
+    },
+    onGyroError: function() {
+        alert('gyro Error!');
     },
     onCompassSuccess: function(heading) {
         document.getElementById('magheading').innerHTML = heading.magneticHeading;
