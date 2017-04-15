@@ -1,13 +1,9 @@
 <!DOCTYPE html>
 <html>
   <head>
-  
   </head>
   <body>
-    <div id="connectForm">
-      <input id="addrinput" type="text" />
-      <button id="connect">Connect</button>
-    </div>
+    <div style="font-size: 2em;" id="yourcode"></div>
     <div id="prop"></div>
     <br />
     <br />
@@ -32,11 +28,32 @@
     <div id="rotz"></div>
     <div id="interval"></div>
 
+<script type="text/javascript" src="autobahn.min.js"></script>
 <script>
-function connect() {
-  var server = document.querySelector('#addrinput').value;
-  // delete form
-  document.body.removeChild(document.querySelector('#connectForm'));
+
+function main() {
+  var conn = new autobahn.Connection({
+    url: 'ws://' + document.location.host + '/ws',
+    realm: 'golf_course'
+  });
+
+  conn.onopen = wsOpened;
+  conn.onclose = wsClosed;
+
+  conn.open();
+}
+
+function wsOpened(session, details) {
+  var code = ('0000'+Math.floor(Math.random()*9999)).slice(-4);
+  document.querySelector('#yourcode').innerHTML = code;
+
+  window.addEventListener('unload', function() {
+    session.call('com.forrestli.selfiegolf.unregister', [code]);
+  }, true);
+}
+
+function wsClosed(reason, details) {
+  //alert("closed: " + reason + " " + details);
 }
 
 // device data capture
@@ -87,7 +104,7 @@ function registerEvents() {
   }, true);
 }
 
-document.querySelector('#connect').addEventListener('click', connect);
+main();
 </script>
   </body>
 </html>
