@@ -63,22 +63,22 @@ class Golf(ApplicationSession):
         yield self.subscribe(self.onBoop,
                 'com.forrestli.selfiegolf.pubsub.boop')
         yield self.register(self.newGame, 
-	        'com.forrestli.selfiegolf.pubsub.newGame')
-	yield self.register(self.endGame,
-	        'com.forrestli.selfiegolf.pubsub.endGame')
-	self.games = {}
+                'com.forrestli.selfiegolf.pubsub.newGame')
+        yield self.register(self.endGame,
+                'com.forrestli.selfiegolf.pubsub.endGame')
+        self.games = {}
 
     def newGame(self, new_id):
         if new_id not in self.games:
-	    self.games[new_id] = GolfGame(new_id, self)
-	else:
-	    return "no sorry someone else has that"
+            self.games[new_id] = GolfGame(new_id, self)
+        else:
+            return "no sorry someone else has that"
     
     def endGame(self, dead_id):
         if dead_id in self.games:
-	    del self.games[dead_id]
-	else:
-	    return "That is not dead which can eternal lie, and with strange aeons even death may die"
+            del self.games[dead_id]
+        else:
+            return "That is not dead which can eternal lie, and with strange aeons even death may die"
 
     def onBoop(self, my_id):
         if my_id in self.games:
@@ -102,7 +102,7 @@ class GolfGame:
     
     def __init__(self, my_id, session):
         self.my_id = my_id
-	self.session = session
+        self.session = session
         #game state
         self.stationary = True
         self.about2hit = False
