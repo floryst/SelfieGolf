@@ -3,8 +3,10 @@
   <head>
   </head>
   <body>
+    text
     <div style="font-size: 2em;" id="yourcode"></div>
     <div id="prop"></div>
+    <div id="yourcode"></div>
     <br />
     <br />
     <!-- https://developer.mozilla.org/en-US/docs/Web/Guide/Events/Orientation_and_motion_data_explained -->
@@ -41,6 +43,8 @@ function main() {
   conn.onclose = wsClosed;
 
   conn.open();
+  registerEvents();
+  console.log("good");
 }
 
 function wsOpened(session, details) {
