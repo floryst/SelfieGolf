@@ -51,13 +51,13 @@ unweight = .99
 class Golf(ApplicationSession):
 
     log = Logger()
-
+    games = {}
     @inlineCallbacks
     def onJoin(self, details):
         yield self.subscribe(self.onAccel,
                 'com.forrestli.selfiegolf.pubsub.accel')
-        #yield self.subscribe(self.onOrient,
-        #        'com.forrestli.selfiegolf.pubsub.orient')
+        yield self.subscribe(self.onOrient,
+                'com.forrestli.selfiegolf.pubsub.orientation')
         yield self.subscribe(self.onGyro,
                 'com.forrestli.selfiegolf.pubsub.gyro')
         yield self.subscribe(self.onBoop,
@@ -66,7 +66,7 @@ class Golf(ApplicationSession):
                 'com.forrestli.selfiegolf.pubsub.newGame')
         yield self.register(self.endGame,
                 'com.forrestli.selfiegolf.pubsub.endGame')
-        self.games = {}
+        
 
     def newGame(self, new_id):
         if new_id not in self.games:
@@ -89,10 +89,13 @@ class Golf(ApplicationSession):
             self.games[my_id].onAccel(x, y, z)
 
     def onOrient(self, mag, true, my_id):
+
+        self.log.info(str(("recieved orientation", mag, true, my_id, self.games)))
         if my_id in self.games:
             self.games[my_id].onOrient(mag, true)
 
     def onGyro(self, x, y, zi, my_id):
+        self.log.info(str(("recieved gyro", x, y, zi, my_id, self.games)))
         if my_id in self.games:
             self.games[my_id].onGyro(x, y, zi)
 
@@ -179,7 +182,7 @@ class GolfGame:
         self.theta += x/dt
         self.DDtheta = (x - self.prevDtheta)/dt
         self.prevDtheta = x
-        yield self.session.publish('com.forrestli.selfiegolf.pubsub.orientation', self.orientation, self.my_id)
+        yield self.session.publish('com.forrestli.selfiegolf.pubsub.rendererOrientation', self.orientation, self.my_id)
         if(self.theta > 0 and self.about2hit):
             self.stationary = False
             self.about2hit = False

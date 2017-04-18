@@ -1,7 +1,7 @@
 import numpy as np
 import xml
 import subprocess
-import matplotlib.pyplot as plt
+
 points = "40.34214 3.5625 -219.1813 -60.08951 3.5625 -219.1813 40.34214 3.5625 -202.3688 -60.08951 3.5625 -202.3688 -71.15786 3.5625 -213.4372 -71.15786 3.5625 -219.1813 -60.08951 3.5625 -249.9313 -71.08951 3.5625 -249.9313 -71.08951 3.5625 -219.1813"
 points = points.split()
 points = np.array(list(map(float, points))).\

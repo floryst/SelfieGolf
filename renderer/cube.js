@@ -24,16 +24,17 @@ function onBall(data) {
 
 function onOrient(heading) {
     window.ball.heading = heading[0];
+    console.log(heading, id);
 }
 
-function onStroke(strokes) {
+function onStroke(strokes, id) {
     window.strokes = strokes[0];
     // XSS-enabled
     document.getElementById("strokes").innerHTML = window.strokes;
 }
 
 // hide ball by moving it below world
-function hideBall() {
+function hideBall(id) {
     window.ballHidden = true;
 }
 
@@ -105,7 +106,7 @@ function init() {
 
     // connect to server
     conn = new autobahn.Connection({
-        url: 'ws://localhost:8000/ws',
+        url: 'ws://' + location.hostname + ":8000/ws",
         realm: 'golf_course'
     });
 

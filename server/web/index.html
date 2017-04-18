@@ -12,10 +12,13 @@
     <!-- https://developer.mozilla.org/en-US/docs/Web/Guide/Events/Orientation_and_motion_data_explained -->
     <!-- https://developer.mozilla.org/en-US/docs/Web/API/DeviceOrientationEvent/absolute -->
     <!-- https://developer.mozilla.org/en-US/docs/Web/API/Detecting_device_orientation -->
+    absolute:
     <div id="absolute"></div>
+    xyx:
     <div id="x"></div>
     <div id="y"></div>
     <div id="z"></div>
+    webkit:
     <div id="webkit"></div>
     <br />
     <br />
@@ -33,9 +36,11 @@
 <script type="text/javascript" src="autobahn.min.js"></script>
 <script>
 
+var session_;
+var code;
 function main() {
   var conn = new autobahn.Connection({
-    url: 'ws://' + document.location.host + '/ws',
+    url: 'ws://' + document.location.hostname + ':8000/ws',
     realm: 'golf_course'
   });
 
@@ -43,17 +48,25 @@ function main() {
   conn.onclose = wsClosed;
 
   conn.open();
-  registerEvents();
+  //registerEvents();
   console.log("good");
+
+
+
+
 }
 
 function wsOpened(session, details) {
-  var code = ('0000'+Math.floor(Math.random()*9999)).slice(-4);
+  code = ('0000'+Math.floor(Math.random()*9999)).slice(-4);
   document.querySelector('#yourcode').innerHTML = code;
 
+  
+  session_ = session;  
   window.addEventListener('unload', function() {
-    session.call('com.forrestli.selfiegolf.unregister', [code]);
+    session.call('com.forrestli.selfiegolf.pupsub.endGame', [code]);
   }, true);
+  registerEvents();  
+  session_.call('com.forrestli.selfiegolf.pubsub.newGame', [code]);
 }
 
 function wsClosed(reason, details) {
@@ -78,6 +91,8 @@ function registerEvents() {
       document.querySelector('#x').innerHTML = evt.beta;
       document.querySelector('#y').innerHTML = evt.gamma;
       document.querySelector('#z').innerHTML = evt.alpha;
+
+      session_.publish('com.forrestli.selfiegolf.pubsub.orientation', [evt.alpha, evt.alpha, code]);
     });
   }
   else {
@@ -96,6 +111,8 @@ function registerEvents() {
       document.querySelector('#roty').innerHTML = evt.rotationRate.gamma;
       document.querySelector('#rotz').innerHTML = evt.rotationRate.alpha;
       document.querySelector('#interval').innerHTML = evt.interval;
+      
+      session_.publish('com.forrestli.selfiegolf.pubsub.gyro', [evt.rotationRate.beta, evt.rotationRate.gamma, evt.rotationRate.alpha, code]);
     }, true);
   }
   else {
