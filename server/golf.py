@@ -186,13 +186,13 @@ class GolfGame:
 
     @inlineCallbacks
     def onGyro(self, x, y, z):
-        self.orientation +=  z * np.pi / 180* dt
-        self.theta += x * np.pi / 180  *dt
-        self.DDtheta = (x - self.prevDtheta)/dt * np.pi / 180
+        self.orientation +=  y * np.pi / 180* dt
+        self.theta += z * np.pi / 180  *dt
+        self.DDtheta = (z - self.prevDtheta)/dt 
         
-        self.prevDtheta = x
+        self.prevDtheta = z * np.pi / 180
         self.session.log.info("theta, about2hit: {t} {a}", t=self.theta, a=self.about2hit)
-        yield self.session.publish('com.forrestli.selfiegolf.pubsub.rendererOrientation', self.orientation + np.pi, self.my_id)
+        yield self.session.publish('com.forrestli.selfiegolf.pubsub.rendererOrientation', self.orientation, self.my_id)
         if(self.theta > 0 and self.about2hit):
             self.stationary = False
             self.about2hit = False
