@@ -45,7 +45,8 @@ function showBall() {
 function connEstablished(sess, details) {
     session = sess;
     session.subscribe('com.forrestli.selfiegolf.pubsub.ball', onBall);
-    session.subscribe('com.forrestli.selfiegolf.pubsub.orientation', onOrient);
+    session.subscribe('com.forrestli.selfiegolf.pubsub.rendererOrientation', onOrient);
+
     session.subscribe('com.forrestli.selfiegolf.pubsub.strokes', onStroke);
     session.register('com.forrestli.selfiegolf.hide_ball', hideBall).then(function() {}, function(err) {
         console.error('Failed to register hide_ball!');

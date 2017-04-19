@@ -81,23 +81,28 @@ class Golf(ApplicationSession):
             return "That is not dead which can eternal lie, and with strange aeons even death may die"
 
     def onBoop(self, my_id):
-        if my_id in self.games:
-            self.games[my_id].onBoop()
+        if isinstance(my_id, str):
+            if my_id in self.games:
+                self.games[my_id].onBoop()
 
     def onAccel(self, x, y, z, my_id):
-        if my_id in self.games:
-            self.games[my_id].onAccel(x, y, z)
+        if isinstance(my_id, str) and isinstance(x, float) and isinstance(y, float) and isinstance(z, float):
+            if my_id in self.games:
+                self.games[my_id].onAccel(x, y, z)
 
     def onOrient(self, mag, true, my_id):
-
-        self.log.info(str(("recieved orientation", mag, true, my_id, self.games)))
-        if my_id in self.games:
-            self.games[my_id].onOrient(mag, true)
+                          
+        if isinstance(my_id, str) and isinstance(mag, float) and isinstance(true, float):
+            self.log.info("recieved orientation {a} {b} {c}", a=mag, b=type(true), c=type(my_id))
+            if my_id in self.games:
+                self.games[my_id].onOrient(mag, true)
 
     def onGyro(self, x, y, zi, my_id):
-        self.log.info(str(("recieved gyro", x, y, zi, my_id, self.games)))
-        if my_id in self.games:
-            self.games[my_id].onGyro(x, y, zi)
+        
+        if  isinstance(my_id, str) and isinstance(x, float) and isinstance(y, float) and isinstance(zi, float):
+            self.log.info("recieved gyro {a} {b} {c} {d}", a=x, b=y, c=zi, d=my_id)
+            if my_id in self.games:
+                self.games[my_id].onGyro(x, y, zi)
 
 
 class GolfGame:
@@ -108,7 +113,7 @@ class GolfGame:
         self.session = session
         #game state
         self.stationary = True
-        self.about2hit = False
+        self.about2hit = True
         self.theta = 0
         self.prevDtheta = 0
         self.DDtheta = 0
@@ -159,10 +164,10 @@ class GolfGame:
         self.x = x
         self.z = z
         yield self.session.publish('com.forrestli.selfiegolf.pubsub.ball', x, .1, z, self.stationary, self.my_id)
-
+        #self.onBoop()
     def onBoop(self):
         if not self.disable_hits:
-            self.log.info("boop")
+            self.session.log.info("boop")
             self.about2hit = True
 
     def onAccel(self, x, y, z):
@@ -173,16 +178,21 @@ class GolfGame:
 
     def onOrient(self, mag, true):
         o = mag * np.pi / 180
-        self.orientation = weight * o + unweight * self.orientation
+        self.orientation = o
+        self.theta = true * np.pi / 180
+        if true < -30: 
+            self.onBoop()
         #self.log.info('orient: {mag} {true}', mag=mag, true=true)
 
     @inlineCallbacks
     def onGyro(self, x, y, z):
-        self.orientation -= .3 * z * dt
-        self.theta += x/dt
-        self.DDtheta = (x - self.prevDtheta)/dt
+        self.orientation +=  z * np.pi / 180* dt
+        self.theta += x * np.pi / 180  *dt
+        self.DDtheta = (x - self.prevDtheta)/dt * np.pi / 180
+        
         self.prevDtheta = x
-        yield self.session.publish('com.forrestli.selfiegolf.pubsub.rendererOrientation', self.orientation, self.my_id)
+        self.session.log.info("theta, about2hit: {t} {a}", t=self.theta, a=self.about2hit)
+        yield self.session.publish('com.forrestli.selfiegolf.pubsub.rendererOrientation', self.orientation + np.pi, self.my_id)
         if(self.theta > 0 and self.about2hit):
             self.stationary = False
             self.about2hit = False

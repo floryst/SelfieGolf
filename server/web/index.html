@@ -92,7 +92,7 @@ function registerEvents() {
       document.querySelector('#y').innerHTML = evt.gamma;
       document.querySelector('#z').innerHTML = evt.alpha;
 
-      session_.publish('com.forrestli.selfiegolf.pubsub.orientation', [evt.alpha, evt.alpha, code]);
+      session_.publish('com.forrestli.selfiegolf.pubsub.orientation', [evt.alpha, evt.beta, code]);
     });
   }
   else {
