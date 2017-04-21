@@ -12,7 +12,20 @@ window.my_id = 0;
 init();
 animate();
 
+function updateid() {
+    window.my_id = document.getElementById('my_id').value;
+}
 
+function onNewBall(id) {
+    window.otherballs[id] = makeball();
+    scene.add(window.otherballs[id]);
+}
+
+function onDelBall(id) {
+    if (!(id in window.otherballs)) return;
+    scene.remove(window.otherballs[id]);
+    delete window.otherballs[id];
+}
 
 function onBall(data) {
     var x = data[0],
@@ -26,12 +39,7 @@ function onBall(data) {
         window.ball.z = z;
         window.ball.isMoving = !isStationary;
     }
-    else {
-        if (!(id in window.otherballs)) {
-            window.otherballs[id] = makeball();
-            scene.add(window.otherballs[id]);
-        }
-        console.log(id, x, y, z);
+    else if (id in window.otherballs) {
         window.otherballs[id].position.x = x;
         window.otherballs[id].position.y = y;
         window.otherballs[id].position.z = z;
@@ -79,6 +87,8 @@ function connEstablished(sess, details) {
     session.register('com.forrestli.selfiegolf.show_ball', showBall).then(function() {}, function(err) {
         console.error('Failed to register show_ball!');
     });
+    session.subscribe('com.forrestli.selfiegolf.pubsub.newGame', onNewBall);
+    session.subscribe('com.forrestli.selfiegolf.pubsub.newGame', onDelBall);
 }
 
 function makeball() {

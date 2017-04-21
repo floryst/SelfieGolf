@@ -13,11 +13,12 @@
   z-index: 100;
   color: yellow;
 }
+
 </style>
 
 </head>
 <body>
-	<input id="my_id" type=text onchange="window.my_id = document.getElementById('my_id').value">
+	<input id="my_id" type=text oninput="updateid();">
   <div id="strokes">0</div>
 </body>
 

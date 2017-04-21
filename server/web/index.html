@@ -70,10 +70,10 @@ function wsOpened(session, details) {
   
   session_ = session;  
   window.addEventListener('unload', function() {
-    session.call('com.forrestli.selfiegolf.pupsub.endGame', [code]);
+    session.publish('com.forrestli.selfiegolf.pubsub.endGame', [code]);
   }, true);
   registerEvents();  
-  session_.call('com.forrestli.selfiegolf.pubsub.newGame', [code]);
+  session_.publish('com.forrestli.selfiegolf.pubsub.newGame', [code]);
 }
 
 function wsClosed(reason, details) {
