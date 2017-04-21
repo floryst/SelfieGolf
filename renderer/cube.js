@@ -85,6 +85,19 @@ function showBall(id) {
 
 function connEstablished(sess, details) {
     session = sess;
+    session.call('com.forrestli.selfiegolf.getBalls', []).then(function(balls) {
+        for (var i = 0; i < balls.length; i++) {
+            // semi-duplicate code of onNewBall, except for pre-existing balls
+            var b = makeball();
+            // [id, x, z]
+            b.position.x = balls[i][1];
+            b.position.z = balls[i][2];
+            window.otherballs[balls[i][0]] = b;
+            scene.add(b);
+        }
+    }).catch(function(err) {
+        console.log(err);
+    });
     session.subscribe('com.forrestli.selfiegolf.pubsub.ball', onBall);
     session.subscribe('com.forrestli.selfiegolf.pubsub.rendererOrientation', onOrient);
 

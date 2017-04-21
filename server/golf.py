@@ -66,7 +66,11 @@ class Golf(ApplicationSession):
                 'com.forrestli.selfiegolf.pubsub.newGame')
         yield self.subscribe(self.endGame,
                 'com.forrestli.selfiegolf.pubsub.endGame')
+        yield self.register(self.getBalls,
+                'com.forrestli.selfiegolf.getBalls')
         
+    def getBalls(self):
+        return [(b, self.games[b].x, self.games[b].z) for b in self.games]
 
     def newGame(self, new_id):
         if new_id not in self.games:
