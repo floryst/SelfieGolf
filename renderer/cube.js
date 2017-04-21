@@ -1,9 +1,10 @@
 var scene, camera, renderer;
-var geometry, material, mesh, mainBallMesh;
+var geometry, material, mesh;
 var conn, session;
 var ballHidden = false;
 
 window.strokes = 0;
+// current ball
 window.ball = {x: 0, y:0, z:0, isMoving:false, heading:0, cameraHeading:3.14};
 window.otherballs = {};
 
@@ -14,15 +15,23 @@ animate();
 
 function updateid() {
     window.my_id = document.getElementById('my_id').value;
+    if (window.otherballs[window.my_id] != undefined) {
+        window.ball.x = window.otherballs[window.my_id].position.x;
+        window.ball.y = window.otherballs[window.my_id].position.y;
+        window.ball.z = window.otherballs[window.my_id].position.z;
+    }
 }
 
 function onNewBall(id) {
-    window.otherballs[id] = makeball();
-    scene.add(window.otherballs[id]);
+    var id = id[0];
+    var ball = makeball();
+    window.otherballs[id] = ball;
+    scene.add(ball);
 }
 
 function onDelBall(id) {
-    if (!(id in window.otherballs)) return;
+    var id = id[0];
+    if (window.otherballs[id] == undefined) return;
     scene.remove(window.otherballs[id]);
     delete window.otherballs[id];
 }
@@ -33,16 +42,15 @@ function onBall(data) {
         z = data[2],
         isStationary = data[3],
         id = data[4];
-    if (id == window.my_id) {
+    if (window.otherballs[id] != undefined) {
+        ballMesh = window.otherballs[id];
+        ballMesh.position.x = x;
+        ballMesh.position.y = y;
+        ballMesh.position.z = z;
         window.ball.x = x;
         window.ball.y = y;
         window.ball.z = z;
         window.ball.isMoving = !isStationary;
-    }
-    else if (id in window.otherballs) {
-        window.otherballs[id].position.x = x;
-        window.otherballs[id].position.y = y;
-        window.otherballs[id].position.z = z;
     }
 }
 
@@ -88,13 +96,13 @@ function connEstablished(sess, details) {
         console.error('Failed to register show_ball!');
     });
     session.subscribe('com.forrestli.selfiegolf.pubsub.newGame', onNewBall);
-    session.subscribe('com.forrestli.selfiegolf.pubsub.newGame', onDelBall);
+    session.subscribe('com.forrestli.selfiegolf.pubsub.endGame', onDelBall);
 }
 
 function makeball() {
-    ballMat = new THREE.MeshLambertMaterial();
-    ballGeo = new THREE.SphereGeometry(.04);
-    ballMesh = new THREE.Mesh(ballGeo, ballMat);
+    var ballMat = new THREE.MeshLambertMaterial();
+    var ballGeo = new THREE.SphereGeometry(.04);
+    var ballMesh = new THREE.Mesh(ballGeo, ballMat);
     ballMesh.position.y = .04;
     return ballMesh;
 }
@@ -121,8 +129,6 @@ function init() {
         scene.add(result.scene);
         console.log("loader worked i guess");
     });
-    mainBallMesh = makeball();
-    scene.add(mainBallMesh);
 
     var dir = new THREE.Vector3( 1, 0, 0 );
     var origin = new THREE.Vector3( 0, 0, 0 );
@@ -164,17 +170,21 @@ function animate() {
     mesh.rotation.x += 0.01;
     mesh.rotation.y += 0.02;
 
-    mainBallMesh.position.x = window.ball.x;
-    if (window.ballHidden)
-        mainBallMesh.position.y = -42;
-    else
-        mainBallMesh.position.y = window.ball.y;
-    mainBallMesh.position.z = window.ball.z;
+    camX = camY = camZ = 0;
+    if (window.otherballs[window.my_id] != undefined) {
+        ballMesh = window.otherballs[window.my_id];
+        if (window.ballHidden)
+            ballMesh.position.y = -42;
+        camX = ballMesh.position.x;
+        camY = ballMesh.position.y;
+        camZ = ballMesh.position.z;
+    }
+
     if(window.ball.isMoving){
       camera.lookAt(new THREE.Vector3(window.ball.x, window.ball.y, window.ball.z));
       arrowHelper.position.copy(new THREE.Vector3(1000, 1000, 1000));
     } else {
-      arrowHelper.position.copy(new THREE.Vector3(window.ball.x, window.ball.y, window.ball.z))
+      arrowHelper.position.copy(new THREE.Vector3(window.ball.x, window.ball.y, window.ball.z));
       // height of ball is 0.4
       arrowHelper.setDirection(new THREE.Vector3(Math.cos(window.ball.heading), 0.2, Math.sin(window.ball.heading)));
       camera.position.x = window.ball.x;
