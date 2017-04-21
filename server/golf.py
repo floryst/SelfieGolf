@@ -135,7 +135,7 @@ class GolfGame:
         for x, z in path:
             if z > self.hole_z-hole_halfwidth  and z < self.hole_z+hole_halfwidth and \
                     x > self.hole_x-hole_halfwidth and x < self.hole_x+hole_halfwidth:
-                #subprocess.Popen(['play', '-q', '../golf_hole.py'])
+                subprocess.Popen(['play', '-q', '../golf_hole.wav'])
                 yield self.session.publish('com.forrestli.selfiegolf.hide_ball', self.my_id)
                 # don't continue to perform swing
                 self.disable_hits = True
