@@ -1,10 +1,11 @@
 var scene, camera, renderer;
-var geometry, material, mesh;
+var geometry, material, mesh, mainBallMesh;
 var conn, session;
 var ballHidden = false;
 
 window.strokes = 0;
 window.ball = {x: 0, y:0, z:0, isMoving:false, heading:0, cameraHeading:3.14};
+window.otherballs = {};
 
 window.my_id = 0;
 
@@ -17,20 +18,37 @@ function onBall(data) {
     var x = data[0],
         y = data[1],
         z = data[2],
-        isStationary = data[3];
-    window.ball.x = x;
-    window.ball.y = y;
-    window.ball.z = z;
-    window.ball.isMoving = !isStationary;
+        isStationary = data[3],
+        id = data[4];
+    if (id == window.my_id) {
+        window.ball.x = x;
+        window.ball.y = y;
+        window.ball.z = z;
+        window.ball.isMoving = !isStationary;
+    }
+    else {
+        if (!(id in window.otherballs)) {
+            window.otherballs[id] = makeball();
+            scene.add(window.otherballs[id]);
+        }
+        console.log(id, x, y, z);
+        window.otherballs[id].position.x = x;
+        window.otherballs[id].position.y = y;
+        window.otherballs[id].position.z = z;
+    }
 }
 
 function onOrient(heading) {
+    if (heading[2] != window.my_id) return;
+
     window.ball.heading = heading[0];
     window.ball.cameraHeading = heading[1];
     console.log(heading, id);
 }
 
-function onStroke(strokes, id) {
+function onStroke(strokes) {
+    if (strokes[1] != window.my_id) return;
+
     window.strokes = strokes[0];
     // XSS-enabled
     document.getElementById("strokes").innerHTML = window.strokes;
@@ -38,10 +56,14 @@ function onStroke(strokes, id) {
 
 // hide ball by moving it below world
 function hideBall(id) {
+    if (id != window.my_id) return;
+
     window.ballHidden = true;
 }
 
-function showBall() {
+function showBall(id) {
+    if (id != window.my_id) return;
+
     window.ballHidden = false;
 }
 
@@ -57,6 +79,14 @@ function connEstablished(sess, details) {
     session.register('com.forrestli.selfiegolf.show_ball', showBall).then(function() {}, function(err) {
         console.error('Failed to register show_ball!');
     });
+}
+
+function makeball() {
+    ballMat = new THREE.MeshLambertMaterial();
+    ballGeo = new THREE.SphereGeometry(.04);
+    ballMesh = new THREE.Mesh(ballGeo, ballMat);
+    ballMesh.position.y = .04;
+    return ballMesh;
 }
 
 function init() {
@@ -81,11 +111,8 @@ function init() {
         scene.add(result.scene);
         console.log("loader worked i guess");
     });
-    ballMat = new THREE.MeshLambertMaterial();
-    ballGeo = new THREE.SphereGeometry(.04);
-    ballMesh = new THREE.Mesh(ballGeo, ballMat);
-    ballMesh.position.y = .04;
-    scene.add(ballMesh);
+    mainBallMesh = makeball();
+    scene.add(mainBallMesh);
 
     var dir = new THREE.Vector3( 1, 0, 0 );
     var origin = new THREE.Vector3( 0, 0, 0 );
@@ -127,12 +154,12 @@ function animate() {
     mesh.rotation.x += 0.01;
     mesh.rotation.y += 0.02;
 
-    ballMesh.position.x = window.ball.x;
+    mainBallMesh.position.x = window.ball.x;
     if (window.ballHidden)
-        ballMesh.position.y = -42;
+        mainBallMesh.position.y = -42;
     else
-        ballMesh.position.y = window.ball.y;
-    ballMesh.position.z = window.ball.z;
+        mainBallMesh.position.y = window.ball.y;
+    mainBallMesh.position.z = window.ball.z;
     if(window.ball.isMoving){
       camera.lookAt(new THREE.Vector3(window.ball.x, window.ball.y, window.ball.z));
       arrowHelper.position.copy(new THREE.Vector3(1000, 1000, 1000));
