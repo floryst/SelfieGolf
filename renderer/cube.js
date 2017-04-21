@@ -67,7 +67,7 @@ function onStroke(strokes) {
 
     window.strokes = strokes[0];
     // XSS-enabled
-    document.getElementById("strokes").innerHTML = window.strokes;
+    document.getElementById("strokes").innerText = window.strokes;
 }
 
 // hide ball by moving it below world
