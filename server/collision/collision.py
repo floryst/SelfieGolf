@@ -82,7 +82,7 @@ def reflect(vx, vz, n):
 
     return vx - mul * nx, vz - mul * nz
 
-slow = .005
+slow = .035
 timestep = .01
 def path(x,z, vx, vz):
 
