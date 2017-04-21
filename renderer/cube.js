@@ -6,6 +6,8 @@ var ballHidden = false;
 window.strokes = 0;
 window.ball = {x: 0, y:0, z:0, isMoving:false, heading:0, cameraHeading:3.14};
 
+window.my_id = 0;
+
 init();
 animate();
 
