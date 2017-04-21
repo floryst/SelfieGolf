@@ -126,7 +126,13 @@ function registerEvents() {
       document.querySelector('#rotz').innerHTML = evt.rotationRate.alpha;
       document.querySelector('#interval').innerHTML = evt.interval;
       
-      session_.publish('com.forrestli.selfiegolf.pubsub.gyro', [evt.rotationRate.beta, evt.rotationRate.gamma, evt.rotationRate.alpha, code]);
+      if (/iPhone/.test(navigator.userAgent)) {
+        session_.publish('com.forrestli.selfiegolf.pubsub.gyro', [evt.rotationRate.beta, evt.rotationRate.gamma, evt.rotationRate.alpha, code]);
+      }
+      else if (/Android/.test(navigator.userAgent)) {
+        var factor  = 360 / (2 * Math.PI);
+        session_.publish('com.forrestli.selfiegolf.pubsub.gyro', [evt.rotationRate.beta*factor, evt.rotationRate.gamma*factor, evt.rotationRate.alpha*factor, code]);
+      }
     }, true);
   }
   else {
