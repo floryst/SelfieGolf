@@ -47,6 +47,8 @@ function onBall(data) {
         ballMesh.position.x = x;
         ballMesh.position.y = y;
         ballMesh.position.z = z;
+    }
+    if (id == window.my_id) {
         window.ball.x = x;
         window.ball.y = y;
         window.ball.z = z;
