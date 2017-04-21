@@ -4,7 +4,7 @@ var conn, session;
 var ballHidden = false;
 
 window.strokes = 0;
-window.ball = {x: 0, y:0, z:0, isMoving:false, heading:0};
+window.ball = {x: 0, y:0, z:0, isMoving:false, heading:0, cameraHeading:3.14};
 
 init();
 animate();
@@ -24,6 +24,7 @@ function onBall(data) {
 
 function onOrient(heading) {
     window.ball.heading = heading[0];
+    window.ball.cameraHeading = heading[1];
     console.log(heading, id);
 }
 
@@ -139,9 +140,9 @@ function animate() {
       arrowHelper.setDirection(new THREE.Vector3(Math.cos(window.ball.heading), 0.2, Math.sin(window.ball.heading)));
       camera.position.x = window.ball.x;
       camera.position.z = window.ball.z;
-      var lookx = window.ball.x + Math.cos(window.ball.heading);
+      var lookx = window.ball.x + Math.cos(window.ball.cameraHeading);
       var looky = 0;
-      var lookz = window.ball.z + Math.sin(window.ball.heading);
+      var lookz = window.ball.z + Math.sin(window.ball.cameraHeading);
       camera.lookAt(new THREE.Vector3(lookx, looky, lookz));
     }
 

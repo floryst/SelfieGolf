@@ -123,6 +123,7 @@ class GolfGame:
         self.strokes = 0
         self.hole_x, self.hole_z = holes[self.cur_level]
         self.x, self.z = start[self.cur_level]
+        self.cameraHeading = 0
 
     @inlineCallbacks
     def swing(self):
@@ -130,7 +131,7 @@ class GolfGame:
         yield self.session.publish('com.forrestli.selfiegolf.pubsub.strokes', self.strokes, self.my_id)
 
         v = self.prevDtheta * r
-        path = collision.collision.path(self.x, self.z, v * np.cos(self.orientation), v * np.sin(self.orientation))
+        path = collision.collision.path(self.x, self.z, v * np.cos(self.orientation + self.cameraHeading), v * np.sin(self.orientation + self.cameraHeading))
         for x, z in path:
             if z > self.hole_z-hole_halfwidth  and z < self.hole_z+hole_halfwidth and \
                     x > self.hole_x-hole_halfwidth and x < self.hole_x+hole_halfwidth:
@@ -177,8 +178,13 @@ class GolfGame:
             self.theta = weight * guess + unweight * self.theta
 
     def onOrient(self, mag, true):
-        o = mag * np.pi / 180
+        o = -1 * mag * np.pi / 180
         self.orientation = o
+
+        if self.orientation < -np.pi / 4:
+            self.cameraHeading -= .03
+        if self.orientation > np.pi / 4:
+            self.cameraHeading += .03
         self.theta = true * np.pi / 180
         if true < -30: 
             self.onBoop()
@@ -186,13 +192,13 @@ class GolfGame:
 
     @inlineCallbacks
     def onGyro(self, x, y, z):
-        self.orientation +=  y * np.pi / 180* dt
+        self.orientation +=  -1 * y * np.pi / 180* dt
         self.theta += z * np.pi / 180  *dt
         self.DDtheta = (z - self.prevDtheta)/dt 
         
         self.prevDtheta = z * np.pi / 180
         self.session.log.info("theta, about2hit: {t} {a}", t=self.theta, a=self.about2hit)
-        yield self.session.publish('com.forrestli.selfiegolf.pubsub.rendererOrientation', self.orientation, self.my_id)
+        yield self.session.publish('com.forrestli.selfiegolf.pubsub.rendererOrientation', self.orientation + self.cameraHeading, self.cameraHeading, self.my_id)
         if(self.theta > 0 and self.about2hit):
             self.stationary = False
             self.about2hit = False

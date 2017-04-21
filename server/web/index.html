@@ -4,6 +4,7 @@
   </head>
   <body>
     text
+    <input id="clickMe" type="button" value="Point phone at computer and click me" onclick="offset=raw; " />
     <div style="font-size: 2em;" id="yourcode"></div>
     <div id="prop"></div>
     <div id="yourcode"></div>
@@ -38,6 +39,10 @@
 
 var session_;
 var code;
+
+var offset = 0;
+var raw = 0;
+
 function main() {
   var conn = new autobahn.Connection({
     url: 'ws://' + document.location.hostname + ':8000/ws',
@@ -91,8 +96,17 @@ function registerEvents() {
       document.querySelector('#x').innerHTML = evt.beta;
       document.querySelector('#y').innerHTML = evt.gamma;
       document.querySelector('#z').innerHTML = evt.alpha;
+      raw = evt.alpha;
 
-      session_.publish('com.forrestli.selfiegolf.pubsub.orientation', [evt.alpha, evt.beta, code]);
+      var orientation = evt.alpha - offset;
+
+      while (orientation < -180){
+	      orientation += 360;
+      }
+      while (orientation > 180) {
+	      orientation -= 360;
+      }
+      session_.publish('com.forrestli.selfiegolf.pubsub.orientation', [orientation, evt.beta, code]);
     });
   }
   else {
