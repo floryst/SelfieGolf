@@ -62,11 +62,15 @@ class Golf(ApplicationSession):
                 'com.forrestli.selfiegolf.pubsub.gyro')
         yield self.subscribe(self.onBoop,
                 'com.forrestli.selfiegolf.pubsub.boop')
-        yield self.register(self.newGame, 
+        yield self.subscribe(self.newGame,
                 'com.forrestli.selfiegolf.pubsub.newGame')
-        yield self.register(self.endGame,
+        yield self.subscribe(self.endGame,
                 'com.forrestli.selfiegolf.pubsub.endGame')
+        yield self.register(self.getBalls,
+                'com.forrestli.selfiegolf.getBalls')
         
+    def getBalls(self):
+        return [(b, self.games[b].x, self.games[b].z) for b in self.games]
 
     def newGame(self, new_id):
         if new_id not in self.games:
@@ -113,7 +117,7 @@ class GolfGame:
         self.session = session
         #game state
         self.stationary = True
-        self.about2hit = True
+        self.about2hit = False
         self.theta = 0
         self.prevDtheta = 0
         self.DDtheta = 0
