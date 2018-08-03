@@ -137,7 +137,7 @@ function init() {
 
     // connect to server
     conn = new autobahn.Connection({
-        url: 'ws://' + location.hostname + ":8000/ws",
+        url: 'ws://' + location.hostname + "/controllerws/ws",
         realm: 'golf_course'
     });
 

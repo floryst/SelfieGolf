@@ -35,19 +35,22 @@
     <div id="roty"></div>
     <div id="rotz"></div>
     <div id="interval"></div>
+    counter:
+    <div id = counter></div>
 
 <script type="text/javascript" src="autobahn.min.js"></script>
 <script>
 
 var session_;
 var code;
+var count = 0;
 
 var offset = 0;
 var raw = 0;
 
 function main() {
   var conn = new autobahn.Connection({
-    url: 'ws://' + document.location.hostname + ':8000/ws',
+    url: 'ws://' + document.location.hostname + '/controllerws/ws',
     realm: 'golf_course'
   });
 
@@ -84,6 +87,8 @@ function wsClosed(reason, details) {
 function registerEvents() {
   if (window.DeviceOrientationEvent) {
     window.addEventListener('deviceorientation', function(evt) {
+      
+      document.querySelector('#counter').innerHTML = count++;    
       var s = "";
       for (var a in evt) {
         s += " " + a;

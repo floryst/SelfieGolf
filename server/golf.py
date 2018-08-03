@@ -93,14 +93,14 @@ class Golf(ApplicationSession):
     def onOrient(self, mag, true, my_id):
                           
         if isinstance(my_id, str) and isinstance(mag, float) and isinstance(true, float):
-            self.log.info("recieved orientation {a} {b} {c}", a=mag, b=type(true), c=type(my_id))
+            #self.log.info("recieved orientation {a} {b} {c}", a=mag, b=type(true), c=type(my_id))
             if my_id in self.games:
                 self.games[my_id].onOrient(mag, true)
 
     def onGyro(self, x, y, zi, my_id):
         
         if  isinstance(my_id, str) and isinstance(x, float) and isinstance(y, float) and isinstance(zi, float):
-            self.log.info("recieved gyro {a} {b} {c} {d}", a=x, b=y, c=zi, d=my_id)
+            #self.log.info("recieved gyro {a} {b} {c} {d}", a=x, b=y, c=zi, d=my_id)
             if my_id in self.games:
                 self.games[my_id].onGyro(x, y, zi)
 
@@ -197,7 +197,7 @@ class GolfGame:
         self.DDtheta = (z - self.prevDtheta)/dt 
         
         self.prevDtheta = z * np.pi / 180
-        self.session.log.info("theta, about2hit: {t} {a}", t=self.theta, a=self.about2hit)
+        #self.session.log.info("theta, about2hit: {t} {a}", t=self.theta, a=self.about2hit)
         yield self.session.publish('com.forrestli.selfiegolf.pubsub.rendererOrientation', self.orientation + self.cameraHeading, self.cameraHeading, self.my_id)
         if(self.theta > 0 and self.about2hit):
             self.stationary = False
